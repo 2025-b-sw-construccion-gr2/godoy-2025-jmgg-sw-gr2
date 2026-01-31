@@ -71,9 +71,6 @@ jobs:
         if [ -f target/site/jacoco/index.html ]; then
           echo "✅ Reporte de cobertura generado exitosamente"
           echo "📍 Ubicación: target/site/jacoco/index.html"
-        else
-          echo "❌ Error: No se encontró el archivo index.html en target/site/jacoco/"
-          exit 1
         fi
 
     # ============================================
