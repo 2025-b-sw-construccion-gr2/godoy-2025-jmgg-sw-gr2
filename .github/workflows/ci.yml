@@ -55,26 +55,25 @@ jobs:
         mvn clean compile -q
 
     # ============================================
-    # PASO 6: TEST - Ejecutar tests unitarios
+    # PASO 6: TEST & COVERAGE - Ejecutar y Reportar
     # ============================================
-    - name: "🧪 TEST: Ejecutar tests unitarios"
+    - name: "🧪 TEST & COVERAGE: Ejecutar tests y generar reporte"
       run: |
-        echo "=== Ejecutando 20+ tests unitarios con JUnit 5 ==="
-        mvn test -v
+        echo "=== Ejecutando 20+ tests unitarios y generando JaCoCo ==="
+        # Ejecutamos 'test' y 'jacoco:report' juntos para que no se pierdan los datos
+        mvn test jacoco:report -v
 
     # ============================================
-    # PASO 7: COVERAGE - Generar reporte de cobertura
+    # PASO 7: VERIFICACIÓN - Validar existencia del reporte
     # ============================================
-    - name: "📊 COVERAGE: Generar reporte de cobertura (JaCoCo)"
-      run: |
-        echo "=== Generando reporte de cobertura de código ==="
-        mvn jacoco:report
-
     - name: "📈 COVERAGE: Mostrar estadísticas de cobertura"
       run: |
         if [ -f target/site/jacoco/index.html ]; then
           echo "✅ Reporte de cobertura generado exitosamente"
           echo "📍 Ubicación: target/site/jacoco/index.html"
+        else
+          echo "❌ Error: No se encontró el archivo index.html en target/site/jacoco/"
+          exit 1
         fi
 
     # ============================================
