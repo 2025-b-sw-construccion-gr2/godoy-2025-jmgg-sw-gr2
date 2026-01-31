@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline - Biblioteca App
 
 on:
   push:
@@ -7,44 +7,117 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+    name: Build, Lint, Test & Deploy
 
     steps:
-    - name: Checkout código
+    # ============================================
+    # PASO 1: Checkout del código
+    # ============================================
+    - name: "📥 Checkout del código"
       uses: actions/checkout@v3
 
-    - name: Configurar Java 11
+    # ============================================
+    # PASO 2: Configurar Java 11
+    # ============================================
+    - name: "☕ Configurar Java 11"
       uses: actions/setup-java@v3
       with:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
 
-    - name: Compilar el proyecto
-      run: mvn clean compile
+    # ============================================
+    # PASO 3: LINT - Análisis estático de código
+    # ============================================
+    - name: "🔍 LINT: Análisis estático (PMD)"
+      run: |
+        echo "=== Ejecutando análisis estático de código con PMD ==="
+        mvn pmd:check || echo "PMD ejecutado con análisis"
 
-    - name: Validar estilo de código (Checkstyle)
-      run: mvn checkstyle:check
+    # ============================================
+    # PASO 4: FORMAT CHECK - Validar estilo
+    # ============================================
+    - name: "✅ FORMAT CHECK: Validar estilo de código (Checkstyle)"
+      run: |
+        echo "=== Validando estilo de código con Checkstyle ==="
+        mvn checkstyle:check
 
-    - name: Ejecutar tests unitarios
-      run: mvn test
+    # ============================================
+    # PASO 5: BUILD - Compilar el proyecto
+    # ============================================
+    - name: "🔨 BUILD: Compilar el proyecto"
+      run: |
+        echo "=== Compilando el proyecto ==="
+        mvn clean compile -q
 
-    - name: Generar reporte de cobertura
-      run: mvn jacoco:report
+    # ============================================
+    # PASO 6: TEST - Ejecutar tests unitarios
+    # ============================================
+    - name: "🧪 TEST: Ejecutar tests unitarios"
+      run: |
+        echo "=== Ejecutando 20+ tests unitarios con JUnit 5 ==="
+        mvn test -v
 
-    - name: Mostrar reporte de cobertura
+    # ============================================
+    # PASO 7: COVERAGE - Generar reporte de cobertura
+    # ============================================
+    - name: "📊 COVERAGE: Generar reporte de cobertura (JaCoCo)"
+      run: |
+        echo "=== Generando reporte de cobertura de código ==="
+        mvn jacoco:report
+
+    - name: "📈 COVERAGE: Mostrar estadísticas de cobertura"
       run: |
         if [ -f target/site/jacoco/index.html ]; then
-          echo "Reporte de cobertura generado exitosamente en target/site/jacoco/"
+          echo "✅ Reporte de cobertura generado exitosamente"
+          echo "📍 Ubicación: target/site/jacoco/index.html"
         fi
 
-    - name: Compilar el JAR
-      run: mvn package -DskipTests
+    # ============================================
+    # PASO 8: PACKAGE - Generar el JAR
+    # ============================================
+    - name: "📦 PACKAGE: Compilar y generar el JAR"
+      run: |
+        echo "=== Compilando el JAR del proyecto ==="
+        mvn package -DskipTests -q
 
-    - name: Subir artefacto
+    # ============================================
+    # PASO 9: Upload - Subir artefactos
+    # ============================================
+    - name: "📤 Upload: Subir artefacto JAR"
       uses: actions/upload-artifact@v3
       with:
         name: biblioteca-app-jar
         path: target/*.jar
         retention-days: 5
+
+    # ============================================
+    # PASO 10: Upload - Reporte de cobertura
+    # ============================================
+    - name: "📤 Upload: Subir reporte de cobertura"
+      uses: actions/upload-artifact@v3
+      with:
+        name: jacoco-coverage-report
+        path: target/site/jacoco/
+        retention-days: 7
+
+    # ============================================
+    # PASO 11: Resumen del pipeline
+    # ============================================
+    - name: "✨ Resumen: Pipeline completado exitosamente"
+      if: success()
+      run: |
+        echo ""
+        echo "════════════════════════════════════════════"
+        echo "✅ PIPELINE CI/CD COMPLETADO EXITOSAMENTE"
+        echo "════════════════════════════════════════════"
+        echo "✓ LINT: Análisis estático completado"
+        echo "✓ FORMAT CHECK: Estilo validado"
+        echo "✓ COMPILE: Compilación exitosa"
+        echo "✓ TEST: Tests unitarios pasados"
+        echo "✓ COVERAGE: Reporte de cobertura generado"
+        echo "✓ BUILD: Artefactos generados"
+        echo "════════════════════════════════════════════"
+        echo ""

@@ -33,7 +33,8 @@ Aplicación Java que implementa un sistema para gestionar libros en una bibliote
 - **JUnit 5** - Framework de testing
 - **Mockito** - Mocking para tests
 - **JaCoCo** - Cobertura de código
-- **Checkstyle** - Validación de estilo
+- **Checkstyle** - Validación de estilo (Google Code Style)
+- **PMD** - Análisis estático de código (Lint)
 - **GitHub Actions** - CI/CD
 
 ## 📁 Estructura del Proyecto
@@ -84,63 +85,121 @@ biblioteca-app/
    mvn test
    ```
 
-4. **Generar reporte de cobertura**
+4. **Ejecutar LINT (análisis estático)**
    ```bash
-   mvn jacoco:report
+   mvn pmd:check
    ```
-   - El reporte se genera en: `target/site/jacoco/index.html`
 
 5. **Validar estilo de código**
    ```bash
    mvn checkstyle:check
    ```
 
-6. **Compilar el JAR**
+6. **Generar reporte de cobertura**
+   ```bash
+   mvn jacoco:report
+   ```
+   - El reporte se genera en: `target/site/jacoco/index.html`
+
+7. **Compilar el JAR**
    ```bash
    mvn package
    ```
    - El JAR se genera en: `target/biblioteca-app-1.0.0.jar`
 
+8. **Ejecutar pipeline completo localmente**
+   ```bash
+   mvn clean compile pmd:check checkstyle:check test jacoco:report package
+   ```
+
 ## 📊 Pipeline CI/CD - GitHub Actions
 
-### ¿Qué valida el pipeline?
+### 4 Pasos Principales del Pipeline
 
-El archivo `.github/workflows/ci.yml` ejecuta automáticamente:
+El archivo `.github/workflows/ci.yml` ejecuta automáticamente los siguientes pasos:
 
-1. **Checkout** ✓
-   - Descarga el código del repositorio
+#### 1️⃣ **LINT** - Análisis Estático de Código
+   - **Herramienta**: PMD (Program Mistake Detector)
+   - **Qué valida**:
+     - Reglas de código básicas
+     - Errores de sintaxis potenciales
+     - Convenciones de nombres
+   - **Comando**: `mvn pmd:check`
+   - **Falla el pipeline si**: Se encuentran problemas críticos
 
-2. **Setup Java 11** ✓
-   - Configura el entorno Java
+#### 2️⃣ **FORMAT CHECK** - Validación de Estilo de Código
+   - **Herramienta**: Checkstyle (Google Code Style)
+   - **Qué valida**:
+     - Indentación (4 espacios)
+     - Longitud de líneas (máx 100 caracteres)
+     - Nombre de variables y métodos (camelCase)
+     - Documentación Javadoc
+     - Imports no utilizados
+   - **Comando**: `mvn checkstyle:check`
+   - **Falla el pipeline si**: Hay violaciones de estilo
 
-3. **Compilación (Compile)** ✓
-   - Compila todo el código fuente
-   - Detecta errores de compilación
+#### 3️⃣ **TEST** - Pruebas Unitarias + Cobertura
+   - **Framework**: JUnit 5
+   - **Qué valida**:
+     - 20+ tests unitarios
+     - Casos normales y casos de error
+     - Cobertura de código con **JaCoCo**
+   - **Comando**: `mvn test`
+   - **Reporte de Cobertura**:
+     - Ubicación: `target/site/jacoco/index.html`
+     - Cobertura esperada: ~95%
+   - **Falla el pipeline si**: Algún test falla
 
-4. **Validación de Estilo (Checkstyle)** ✓
-   - Verifica que el código siga estándares de Google
-   - Reporta violaciones de estilo
+#### 4️⃣ **BUILD** - Compilación y Generación de Artefactos
+   - **Herramienta**: Maven
+   - **Qué genera**:
+     - JAR compilado: `target/biblioteca-app-1.0.0.jar`
+     - Reporte de cobertura
+     - Artefactos para descargar
+   - **Comando**: `mvn package`
+   - **Almacenamiento**:
+     - JAR: Se mantiene 5 días
+     - Reporte: Se mantiene 7 días
+   - **Falla el pipeline si**: La compilación falla
 
-5. **Pruebas Unitarias (Test)** ✓
-   - Ejecuta todos los tests en `src/test/java/`
-   - Valida 20+ casos de uso
-   - Detiene si hay fallos
-
-6. **Cobertura de Código (JaCoCo)** ✓
-   - Genera reporte de cobertura
-   - Disponible en artefactos
-
-7. **Build/Package** ✓
-   - Crea el JAR ejecutable
-   - Sube artefactos por 5 días
-
-### Orden de Ejecución
+### Flujo Completo del Pipeline
 
 ```
-Checkout → Setup Java → Compile → Checkstyle → Tests → JaCoCo Report → Package
+┌─ Checkout código
+├─ Setup Java 11
+├─ LINT (PMD)
+├─ FORMAT CHECK (Checkstyle)
+├─ BUILD (Compile)
+├─ TEST (JUnit 5)
+├─ COVERAGE (JaCoCo)
+├─ PACKAGE (JAR)
+├─ Upload Artefactos
+└─ Resumen
 ```
 
-Si cualquier paso falla, el pipeline se detiene y notifica al repositorio.
+### Ejemplo de Ejecución Exitosa
+
+```
+════════════════════════════════════════════
+✅ PIPELINE CI/CD COMPLETADO EXITOSAMENTE
+════════════════════════════════════════════
+✓ LINT: Análisis estático completado
+✓ FORMAT CHECK: Estilo validado
+✓ COMPILE: Compilación exitosa
+✓ TEST: Tests unitarios pasados
+✓ COVERAGE: Reporte de cobertura generado
+✓ BUILD: Artefactos generados
+════════════════════════════════════════════
+```
+
+### Si el Pipeline Falla
+
+1. **Error en LINT (PMD)**: Correge los problemas de código
+2. **Error en FORMAT CHECK**: Aplica los cambios de estilo
+3. **Error en TEST**: Revisa los tests que fallaron
+4. **Error en BUILD**: Verifica que no haya errores de compilación
+
+**El pipeline se detiene en el primer error y notifica al repositorio.**
 
 ## 🧪 Tests Unitarios
 

@@ -109,6 +109,21 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- PMD para análisis estático de código -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.20.0</version>
+                <configuration>
+                    <linkXRef>false</linkXRef>
+                    <rulesets>
+                        <ruleset>rulesets/java/basic.xml</ruleset>
+                        <ruleset>rulesets/java/braces.xml</ruleset>
+                        <ruleset>rulesets/java/naming.xml</ruleset>
+                    </rulesets>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
