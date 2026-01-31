@@ -105,6 +105,7 @@ jobs:
         path: biblioteca-app/target/site/jacoco/
         retention-days: 7
 
+
     # ============================================
     # PASO 11: Resumen del pipeline
     # ============================================
@@ -123,3 +124,7 @@ jobs:
         echo "✓ BUILD: Artefactos generados"
         echo "════════════════════════════════════════════"
         echo ""
+    # ============================================
+    # PASO 12: Generar Maven Wrapper
+    - name: "Generar Maven Wrapper"
+      run: mvn -f biblioteca-app/pom.xml wrapper:wrapper
