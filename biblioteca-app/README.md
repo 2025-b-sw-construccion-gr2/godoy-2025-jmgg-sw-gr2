@@ -112,6 +112,8 @@ biblioteca-app/
    ```bash
    mvn clean compile pmd:check checkstyle:check test jacoco:report package
    ```
+   <img width="1089" height="418" alt="image" src="https://github.com/user-attachments/assets/b2435151-bc20-4314-9921-e5c383b77faf" />
+
 
 ## 📊 Pipeline CI/CD - GitHub Actions
 
@@ -179,6 +181,9 @@ El archivo `.github/workflows/ci.yml` ejecuta automáticamente los siguientes pa
 ```
 
 ### Ejemplo de Ejecución Exitosa
+<img width="1405" height="894" alt="image" src="https://github.com/user-attachments/assets/25fcf9ed-5296-464f-b9e6-dc97f0824b09" />
+<img width="1309" height="921" alt="image" src="https://github.com/user-attachments/assets/ab7b0026-5e01-4198-b421-0ffbbab56302" />
+
 
 ```
 ════════════════════════════════════════════
@@ -201,6 +206,8 @@ El archivo `.github/workflows/ci.yml` ejecuta automáticamente los siguientes pa
 4. **Error en BUILD**: Verifica que no haya errores de compilación
 
 **El pipeline se detiene en el primer error y notifica al repositorio.**
+<img width="1126" height="766" alt="image" src="https://github.com/user-attachments/assets/28bf3d8d-3867-4c0f-a436-28ae0c78130a" />
+
 
 ## 🧪 Tests Unitarios
 
@@ -397,7 +404,8 @@ mvn clean test jacoco:report
 
 ## 👨‍💻 Autor
 
-Proyecto del curso de Gestión de Proyectos de Software
+Jotcelyn Godoy
+Cristian Robles
 
 ## 📄 Licencia
 
