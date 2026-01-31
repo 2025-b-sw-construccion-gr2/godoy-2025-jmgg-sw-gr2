@@ -92,7 +92,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: biblioteca-app-jar
-        path: target/*.jar
+        path: biblioteca-app/target/*.jar
         retention-days: 5
 
     # ============================================
@@ -102,7 +102,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: jacoco-coverage-report
-        path: target/site/jacoco/
+        path: biblioteca-app/target/site/jacoco/
         retention-days: 7
 
     # ============================================
