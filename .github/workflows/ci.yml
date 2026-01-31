@@ -127,4 +127,4 @@ jobs:
     # ============================================
     # PASO 12: Generar Maven Wrapper
     - name: "Generar Maven Wrapper"
-      run: mvn -f biblioteca-app/pom.xml wrapper:wrapper
+      run: mvn wrapper:wrapper
