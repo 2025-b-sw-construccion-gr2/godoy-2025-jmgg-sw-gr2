@@ -127,10 +127,5 @@ jobs:
     # ============================================
     # PASO 12: Generar Maven Wrapper
     - name: "Generar Maven Wrapper"
-      run: |
-        mvn wrapper:wrapper
-        git config --global user.name "GitHub Action"
-        git config --global user.email "action@github.com"
-        git add .mvn/ mvnw mvnw.cmd
-        git commit -m "chore: agregar maven wrapper al repositorio"
-        git push origin GestionLibreria
+      run: mvn wrapper:wrapper
+       
