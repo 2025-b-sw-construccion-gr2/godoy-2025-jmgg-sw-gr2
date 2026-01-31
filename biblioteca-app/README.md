@@ -40,10 +40,11 @@ Aplicación Java que implementa un sistema para gestionar libros en una bibliote
 ## 📁 Estructura del Proyecto
 
 ```
-biblioteca-app/
+root/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                              # Pipeline CI/CD
+biblioteca-app/
 ├── src/
 │   ├── main/
 │   │   └── java/com/curso/
