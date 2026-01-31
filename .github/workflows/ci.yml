@@ -89,7 +89,7 @@ jobs:
     # PASO 9: Upload - Subir artefactos
     # ============================================
     - name: "📤 Upload: Subir artefacto JAR"
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: biblioteca-app-jar
         path: target/*.jar
