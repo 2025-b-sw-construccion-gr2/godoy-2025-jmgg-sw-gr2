@@ -2,9 +2,9 @@ name: CI/CD Pipeline - Biblioteca App
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, GestionLibreria ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, GestionLibreria ]
 
 jobs:
   build-and-test:
