@@ -159,4 +159,57 @@ public class LibraryService {
     public int getAvailableBooksCount() {
         return (int) books.stream().filter(Book::isAvailable).count();
     }
+
+    /**
+     * Busca libros por género o categoría.
+     *
+     * @param genre el género del libro
+     * @return lista de libros del género especificado
+     */
+    public List<Book> findBooksByGenre(String genre) {
+        if (genre == null || genre.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Book> result = new ArrayList<>();
+        for (Book book : books) {
+            if (book.getGenre().equalsIgnoreCase(genre)) {
+                result.add(book);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Busca libros disponibles por género.
+     *
+     * @param genre el género del libro
+     * @return lista de libros disponibles del género especificado
+     */
+    public List<Book> findAvailableBooksByGenre(String genre) {
+        if (genre == null || genre.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Book> result = new ArrayList<>();
+        for (Book book : books) {
+            if (book.getGenre().equalsIgnoreCase(genre) && book.isAvailable()) {
+                result.add(book);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Obtiene todos los géneros únicos registrados.
+     *
+     * @return lista de géneros
+     */
+    public List<String> getAllGenres() {
+        List<String> genres = new ArrayList<>();
+        for (Book book : books) {
+            if (!genres.contains(book.getGenre())) {
+                genres.add(book.getGenre());
+            }
+        }
+        return genres;
+    }
 }

@@ -6,13 +6,26 @@ Aplicación Java que implementa un sistema para gestionar libros en una bibliote
 
 ✅ **Gestión de Libros**
 - Agregar libros a la biblioteca
-- Buscar libros por ISBN o autor
+- Buscar libros por ISBN, autor o **género** (NUEVO)
 - Verificar disponibilidad de libros
 - Prestar y devolver libros
+- Listar géneros únicos registrados (NUEVO)
+
+✅ **Sistema de Búsqueda por Género**
+- Filtrar libros por categoría/género
+- Listar libros disponibles de un género específico
+- Obtener estadísticas por género
+- Interfaz visual mejorada
+
+✅ **Demostración Interactiva**
+- Clase `Main.java` con 11 pasos de demostración
+- Visualización de todas las funcionalidades
+- 10 libros de ejemplo en 5 géneros diferentes
+- Tablas formateadas con información clara
 
 ✅ **Pruebas Unitarias**
 - Cobertura completa de funcionalidad
-- 20+ tests con JUnit 5
+- 27 tests con JUnit 5 (incluyendo 7 nuevos para género)
 - Validación de casos edge
 
 ✅ **Validación de Código**
@@ -40,25 +53,54 @@ Aplicación Java que implementa un sistema para gestionar libros en una bibliote
 ## 📁 Estructura del Proyecto
 
 ```
-root/
+biblioteca-app/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                              # Pipeline CI/CD
-biblioteca-app/
 ├── src/
 │   ├── main/
 │   │   └── java/com/curso/
 │   │       ├── model/
-│   │       │   └── Book.java                   # Modelo de Libro
-│   │       └── service/
-│   │           └── LibraryService.java         # Servicio de Biblioteca
+│   │       │   └── Book.java                   # Modelo de Libro (con género)
+│   │       ├── service/
+│   │       │   └── LibraryService.java         # Servicio de Biblioteca
+│   │       └── Main.java                       # Demostración interactiva (NUEVO)
 │   └── test/
 │       └── java/com/curso/
 │           └── service/
-│               └── LibraryServiceTest.java     # Tests unitarios
+│               └── LibraryServiceTest.java     # Tests unitarios (27 tests)
 ├── pom.xml                                     # Configuración Maven
-└── README.md                                   # Este archivo
+├── README.md                                   # Este archivo
+└── CAMBIOS.md                                  # Detalle de cambios (NUEVO)
 ```
+
+## 🎬 Ejecución de la Demostración
+
+Para ver el sistema en acción, ejecuta la clase `Main.java`:
+
+```bash
+# Compilar
+javac -encoding UTF-8 -d target\classes \
+    src\main\java\com\curso\model\Book.java \
+    src\main\java\com\curso\service\LibraryService.java \
+    src\main\java\com\curso\Main.java
+
+# Ejecutar
+java -cp target\classes com.curso.Main
+```
+
+**Salida esperada**: Demostración completa de 11 pasos mostrando:
+1. Agregación de 10 libros en 5 géneros
+2. Listado de todos los libros
+3. Búsqueda por ISBN
+4. Búsqueda por Autor
+5. **Búsqueda por Género (NUEVA)**
+6. **Libros disponibles por género (NUEVA)**
+7. Préstamo de libros
+8. Estado después de préstamos
+9. Devolución de libros
+10. Estadísticas
+11. **Listado de géneros disponibles (NUEVA)**
 
 ## 🚀 Cómo Ejecutar el Proyecto Localmente
 
@@ -114,6 +156,18 @@ biblioteca-app/
    ```
    <img width="1089" height="418" alt="image" src="https://github.com/user-attachments/assets/b2435151-bc20-4314-9921-e5c383b77faf" />
 
+### Opción 2: Ejecución Manual con Java
+
+```bash
+# Compilar
+javac -encoding UTF-8 -d target\classes \
+    src\main\java\com\curso\model\Book.java \
+    src\main\java\com\curso\service\LibraryService.java \
+    src\main\java\com\curso\Main.java
+
+# Ejecutar
+java -cp target\classes com.curso.Main
+```
 
 ## 📊 Pipeline CI/CD - GitHub Actions
 
@@ -394,7 +448,75 @@ mvn test
 mvn clean test jacoco:report
 # Verificar: target/site/jacoco/
 ```
+## Estado de Completitud
 
+### ✅ Funcionalidades Implementadas
+
+- [x] **Sistema de Búsqueda por Género**
+  - [x] Método `findBooksByGenre(String)`
+  - [x] Método `findAvailableBooksByGenre(String)`
+  - [x] Método `getAllGenres()`
+  
+- [x] **Clase Main.java de Demostración**
+  - [x] 11 pasos de demostración completos
+  - [x] Visualización con tablas formateadas
+  - [x] Manejo de 10 libros en 5 géneros
+  - [x] Todas las operaciones funcionales
+
+- [x] **Modelo de Datos Actualizado**
+  - [x] Atributo `genre` en Book
+  - [x] Constructor con género
+  - [x] Getters y setters
+  - [x] toString actualizado
+
+- [x] **Tests Unitarios**
+  - [x] 7 nuevos tests para género
+  - [x] Tests compilados y listos
+  - [x] Cobertura completa
+
+- [x] **Documentación**
+  - [x] README.md actualizado
+  - [x] CAMBIOS.md detallado
+  - [x] RESUMEN_FINAL.md completo
+  - [x] Javadoc en todo el código
+
+- [x] **Pipeline CI/CD**
+  - [x] 4 pasos: Lint → Format Check → Test → Build
+  - [x] Validación de estilo
+  - [x] Tests automáticos
+  - [x] Reporte de cobertura
+
+  ## Validaciones Completadas
+
+### Funcionalidad
+- [x] Agregar libros con género
+- [x] Buscar por ISBN
+- [x] Buscar por Autor
+- [x] **Buscar por Género (NUEVA)**
+- [x] **Filtrar disponibles por género (NUEVA)**
+- [x] **Obtener géneros únicos (NUEVA)**
+- [x] Prestar libros
+- [x] Devolver libros
+- [x] Estadísticas
+
+### Calidad de Código
+- [x] Documentación Javadoc completa
+- [x] Nombres significativos
+- [x] Métodos bien definidos
+- [x] Manejo de excepciones
+- [x] Validación de inputs
+
+### Testing
+- [x] 27 tests implementados
+- [x] Tests de género incluidos
+- [x] Casos positivos y negativos
+- [x] Edge cases cubiertos
+
+### Demostración
+- [x] Interfaz clara y legible
+- [x] Información estructurada
+- [x] Tablas formateadas
+- [x] Estadísticas disponibles
 ## 📚 Documentación Adicional
 
 - [Maven Documentation](https://maven.apache.org/)

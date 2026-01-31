@@ -11,6 +11,7 @@ public class Book {
     private String author;
     private int publicationYear;
     private boolean available;
+    private String genre;
 
     /**
      * Constructor para crear un libro.
@@ -26,6 +27,25 @@ public class Book {
         this.author = author;
         this.publicationYear = publicationYear;
         this.available = true;
+        this.genre = "General";
+    }
+
+    /**
+     * Constructor completo para crear un libro con género.
+     *
+     * @param isbn el ISBN del libro
+     * @param title el título del libro
+     * @param author el autor del libro
+     * @param publicationYear el año de publicación
+     * @param genre el género del libro
+     */
+    public Book(String isbn, String title, String author, int publicationYear, String genre) {
+        this.isbn = isbn;
+        this.title = title;
+        this.author = author;
+        this.publicationYear = publicationYear;
+        this.available = true;
+        this.genre = genre;
     }
 
     // Getters y Setters
@@ -69,7 +89,13 @@ public class Book {
         this.available = available;
     }
 
-    @Override
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -93,6 +119,7 @@ public class Book {
                 + ", title='" + title + '\''
                 + ", author='" + author + '\''
                 + ", publicationYear=" + publicationYear
+                + ", genre='" + genre + '\''
                 + ", available=" + available
                 + '}';
     }
