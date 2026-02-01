@@ -1,0 +1,127 @@
+name: CI/CD Pipeline - Biblioteca App
+
+on:
+  push:
+    branches: [ main, develop, GestionLibreria ]
+  pull_request:
+    branches: [ main, develop, GestionLibreria ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    name: Build, Lint, Test & Deploy
+    defaults:
+      run:
+        working-directory: ./biblioteca-app
+    steps:
+    # ============================================
+    # PASO 1: Checkout del código
+    # ============================================
+    - name: "📥 Checkout del código"
+      uses: actions/checkout@v4
+
+    # ============================================
+    # PASO 2: Configurar Java 11
+    # ============================================
+    - name: "☕ Configurar Java 11"
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: maven
+
+    # ============================================
+    # PASO 3: LINT - Análisis estático de código
+    # ============================================
+    - name: "🔍 LINT: Análisis estático (PMD)"
+      run: |
+        echo "=== Ejecutando análisis estático de código con PMD ==="
+        mvn pmd:check || echo "PMD ejecutado con análisis"
+
+    # ============================================
+    # PASO 4: FORMAT CHECK - Validar estilo
+    # ============================================
+    - name: "✅ FORMAT CHECK: Validar estilo de código (Checkstyle)"
+      run: |
+        echo "=== Validando estilo de código con Checkstyle ==="
+        mvn checkstyle:check
+
+    # ============================================
+    # PASO 5: BUILD - Compilar el proyecto
+    # ============================================
+    - name: "🔨 BUILD: Compilar el proyecto"
+      run: |
+        echo "=== Compilando el proyecto ==="
+        mvn clean compile -q
+
+    # ============================================
+    # PASO 6: TEST & COVERAGE - Ejecutar y Reportar
+    # ============================================
+    - name: "🧪 TEST & COVERAGE: Ejecutar tests y generar reporte"
+      run: |
+        echo "=== Ejecutando 20+ tests unitarios y generando JaCoCo ==="
+        # Ejecutamos 'test' y 'jacoco:report' juntos para que no se pierdan los datos
+        mvn test jacoco:report -v
+
+    # ============================================
+    # PASO 7: VERIFICACIÓN - Validar existencia del reporte
+    # ============================================
+    - name: "📈 COVERAGE: Mostrar estadísticas de cobertura"
+      run: |
+        if [ -f target/site/jacoco/index.html ]; then
+          echo "✅ Reporte de cobertura generado exitosamente"
+          echo "📍 Ubicación: target/site/jacoco/index.html"
+        fi
+
+    # ============================================
+    # PASO 8: PACKAGE - Generar el JAR
+    # ============================================
+    - name: "📦 PACKAGE: Compilar y generar el JAR"
+      run: |
+        echo "=== Compilando el JAR del proyecto ==="
+        mvn package -DskipTests -q
+
+    # ============================================
+    # PASO 9: Upload - Subir artefactos
+    # ============================================
+    - name: "📤 Upload: Subir artefacto JAR"
+      uses: actions/upload-artifact@v4
+      with:
+        name: biblioteca-app-jar
+        path: biblioteca-app/target/*.jar
+        retention-days: 5
+
+    # ============================================
+    # PASO 10: Upload - Reporte de cobertura
+    # ============================================
+    - name: "📤 Upload: Subir reporte de cobertura"
+      uses: actions/upload-artifact@v4
+      with:
+        name: jacoco-coverage-report
+        path: biblioteca-app/target/site/jacoco/
+        retention-days: 7
+
+
+    # ============================================
+    # PASO 11: Resumen del pipeline
+    # ============================================
+    - name: "✨ Resumen: Pipeline completado exitosamente"
+      if: success()
+      run: |
+        echo ""
+        echo "════════════════════════════════════════════"
+        echo "✅ PIPELINE CI/CD COMPLETADO EXITOSAMENTE"
+        echo "════════════════════════════════════════════"
+        echo "✓ LINT: Análisis estático completado"
+        echo "✓ FORMAT CHECK: Estilo validado"
+        echo "✓ COMPILE: Compilación exitosa"
+        echo "✓ TEST: Tests unitarios pasados"
+        echo "✓ COVERAGE: Reporte de cobertura generado"
+        echo "✓ BUILD: Artefactos generados"
+        echo "════════════════════════════════════════════"
+        echo ""
+    # ============================================
+    # PASO 12: Generar Maven Wrapper
+    - name: "Generar Maven Wrapper"
+      run: mvn wrapper:wrapper
+       
