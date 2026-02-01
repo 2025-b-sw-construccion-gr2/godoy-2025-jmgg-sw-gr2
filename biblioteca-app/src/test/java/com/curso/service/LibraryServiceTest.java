@@ -23,9 +23,9 @@ class LibraryServiceTest {
     @BeforeEach
     void setUp() {
         libraryService = new LibraryService();
-        book1 = new Book("978-3-16-148410-0", "Clean Code", "Robert C. Martin", 2008);
-        book2 = new Book("978-0-13-110362-7", "The C Programming Language", "Brian Kernighan", 1988);
-        book3 = new Book("978-0-201-61622-4", "The Pragmatic Programmer", "David Hunt", 1999);
+        book1 = new Book("978-3-16-148410-0", "Clean Code", "Robert C. Martin", 2008, "Programación");
+        book2 = new Book("978-0-13-110362-7", "The C Programming Language", "Brian Kernighan", 1988, "Programación");
+        book3 = new Book("978-0-201-61622-4", "The Pragmatic Programmer", "David Hunt", 1999, "Programación");
     }
 
     @Test
@@ -217,5 +217,67 @@ class LibraryServiceTest {
 
         libraryService.borrowBook("978-0-13-110362-7");
         assertEquals(1, libraryService.getAvailableBooksCount());
+    }
+
+    @Test
+    @DisplayName("Debe encontrar libros por género")
+    void testFindBooksByGenre() {
+        libraryService.addBook(book1);
+        libraryService.addBook(book2);
+        Book ficcionBook = new Book("978-0-06-112008-4", "To Kill a Mockingbird", "Harper Lee", 1960, "Ficción");
+        libraryService.addBook(ficcionBook);
+
+        List<Book> programationBooks = libraryService.findBooksByGenre("Programación");
+        assertEquals(2, programationBooks.size());
+
+        List<Book> fictionBooks = libraryService.findBooksByGenre("Ficción");
+        assertEquals(1, fictionBooks.size());
+    }
+
+    @Test
+    @DisplayName("Debe devolver lista vacía cuando no hay libros del género")
+    void testFindBooksByGenreNotFound() {
+        libraryService.addBook(book1);
+        List<Book> foundBooks = libraryService.findBooksByGenre("Misterio");
+        assertTrue(foundBooks.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Debe encontrar libros disponibles por género")
+    void testFindAvailableBooksByGenre() {
+        libraryService.addBook(book1);
+        libraryService.addBook(book2);
+        assertEquals(2, libraryService.findAvailableBooksByGenre("Programación").size());
+
+        libraryService.borrowBook("978-3-16-148410-0");
+        assertEquals(1, libraryService.findAvailableBooksByGenre("Programación").size());
+    }
+
+    @Test
+    @DisplayName("Debe obtener todos los géneros únicos")
+    void testGetAllGenres() {
+        libraryService.addBook(book1);
+        libraryService.addBook(book2);
+        Book ficcionBook = new Book("978-0-06-112008-4", "To Kill a Mockingbird", "Harper Lee", 1960, "Ficción");
+        libraryService.addBook(ficcionBook);
+
+        List<String> genres = libraryService.getAllGenres();
+        assertEquals(2, genres.size());
+        assertTrue(genres.contains("Programación"));
+        assertTrue(genres.contains("Ficción"));
+    }
+
+    @Test
+    @DisplayName("Debe validar género por defecto 'General'")
+    void testBookGenreDefault() {
+        Book bookWithoutGenre = new Book("978-1234567890", "Test Book", "Test Author", 2023);
+        assertEquals("General", bookWithoutGenre.getGenre());
+    }
+
+    @Test
+    @DisplayName("Debe permitir cambiar género del libro")
+    void testSetBookGenre() {
+        book1.setGenre("Ficción");
+        assertEquals("Ficción", book1.getGenre());
     }
 }
